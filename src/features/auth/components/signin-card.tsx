@@ -13,10 +13,17 @@ import { Label } from "@/components/ui/label";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import { SignCardProps } from "../types";
 import { useState } from "react";
+import { useAuthActions } from "@convex-dev/auth/react";
 
 export const SignInCard = ({ setSignFlow }: SignCardProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const { signIn } = useAuthActions();
+
+  const handleProviderSignIn = (value: "github" | "google") => {
+    signIn(value);
+  };
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
@@ -67,7 +74,7 @@ export const SignInCard = ({ setSignFlow }: SignCardProps) => {
         <Button variant="outline" className="w-full">
           Login with <FaGoogle />
         </Button>
-        <Button variant="outline" className="w-full">
+        <Button variant="outline" className="w-full" onClick={() => handleProviderSignIn("github")}>
           Login with <FaGithub />
         </Button>
       </CardFooter>

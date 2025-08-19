@@ -6,9 +6,13 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "bun:dev": "bun dev",
+    "backend": "bunx convex dev"
   },
   "dependencies": {
+    "@auth/core": "^0.40.0",
+    "@convex-dev/auth": "^0.0.88",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
