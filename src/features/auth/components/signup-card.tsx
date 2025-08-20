@@ -3,12 +3,40 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SignCardProps } from "../types";
-import { useState } from "react";
+import { useAuthActions } from "@convex-dev/auth/react";
+import { FormEvent, useState } from "react";
+import { TriangleAlert } from "lucide-react";
 
 export const SignUpCard = ({ setSignFlow }: SignCardProps) => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState("");
+
+  const { signIn } = useAuthActions();
+
+  const onPasswordSignUp = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      setError("Password do not match.");
+    }
+    setPending(true);
+
+    signIn("password", {
+      name,
+      email,
+      password,
+      flow: "signUp",
+    })
+      .catch(() => {
+        setError("Something went wrong.");
+      })
+      .finally(() => {
+        setPending(false);
+      });
+  };
 
   return (
     <Card className="w-full max-w-sm">
@@ -16,12 +44,30 @@ export const SignUpCard = ({ setSignFlow }: SignCardProps) => {
         <CardTitle>Sign up to continue</CardTitle>
         <CardDescription>Enter your email below to login to your account</CardDescription>
       </CardHeader>
+      {!!error && (
+        <div className="bg-destructive/15 p-3 rounded-md flex items-center gap-x-2 text-sm text-destructive">
+          <TriangleAlert className="size-4" />
+          <p>{error}</p>
+        </div>
+      )}
       <CardContent>
-        <form>
+        <form onSubmit={onPasswordSignUp}>
           <div className="flex flex-col gap-6">
+            <div className="grid gap-2">
+              <Label htmlFor="email">Full Name</Label>
+              <Input
+                disabled={pending}
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="John Wall"
+                required
+              />
+            </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
+                disabled={pending}
                 id="email"
                 type="email"
                 value={email}
@@ -35,6 +81,7 @@ export const SignUpCard = ({ setSignFlow }: SignCardProps) => {
                 <Label htmlFor="password">Password</Label>
               </div>
               <Input
+                disabled={pending}
                 id="password"
                 type="password"
                 value={password}
@@ -48,6 +95,7 @@ export const SignUpCard = ({ setSignFlow }: SignCardProps) => {
                 <Label htmlFor="password">Confirm Password</Label>
               </div>
               <Input
+                disabled={pending}
                 id="confirmPassword"
                 type="password"
                 value={confirmPassword}

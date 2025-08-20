@@ -12,15 +12,34 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import { SignCardProps } from "../types";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { useAuthActions } from "@convex-dev/auth/react";
+import { TriangleAlert } from "lucide-react";
 
 export const SignInCard = ({ setSignFlow }: SignCardProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [pending, setPending] = useState(false);
+  const [error, setError] = useState("");
 
   const { signIn } = useAuthActions();
+
+  const onPasswordSignIn = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setPending(true);
+
+    signIn("password", {
+      email,
+      password,
+      flow: "signIn",
+    })
+      .catch(() => {
+        setError("Invalid email or password. ");
+      })
+      .finally(() => {
+        setPending(false);
+      });
+  };
 
   const onProviderSignIn = (value: "github" | "google") => {
     setPending(true);
@@ -37,8 +56,14 @@ export const SignInCard = ({ setSignFlow }: SignCardProps) => {
           </Button>
         </CardAction>
       </CardHeader>
+      {!!error && (
+        <div className="bg-destructive/15 p-3 rounded-md flex items-center gap-x-2 text-sm text-destructive">
+          <TriangleAlert className="size-4" />
+          <p>{error}</p>
+        </div>
+      )}
       <CardContent>
-        <form>
+        <form onSubmit={onPasswordSignIn}>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
