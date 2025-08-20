@@ -18,11 +18,13 @@ import { useAuthActions } from "@convex-dev/auth/react";
 export const SignInCard = ({ setSignFlow }: SignCardProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [pending, setPending] = useState(false);
 
   const { signIn } = useAuthActions();
 
-  const handleProviderSignIn = (value: "github" | "google") => {
-    signIn(value);
+  const onProviderSignIn = (value: "github" | "google") => {
+    setPending(true);
+    signIn(value).finally(() => setPending(false));
   };
   return (
     <Card className="w-full max-w-sm">
@@ -30,7 +32,7 @@ export const SignInCard = ({ setSignFlow }: SignCardProps) => {
         <CardTitle>Login to your account</CardTitle>
         <CardDescription>Enter your email below to login to your account</CardDescription>
         <CardAction>
-          <Button variant="link" onClick={() => setSignFlow("signUp")}>
+          <Button disabled={pending} variant="link" onClick={() => setSignFlow("signUp")}>
             Sign Up
           </Button>
         </CardAction>
@@ -41,6 +43,7 @@ export const SignInCard = ({ setSignFlow }: SignCardProps) => {
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
+                disabled={pending}
                 id="email"
                 type="email"
                 value={email}
@@ -57,6 +60,7 @@ export const SignInCard = ({ setSignFlow }: SignCardProps) => {
                 </a>
               </div>
               <Input
+                disabled={pending}
                 id="password"
                 type="password"
                 value={password}
@@ -64,17 +68,17 @@ export const SignInCard = ({ setSignFlow }: SignCardProps) => {
                 required
               />
             </div>
-            <Button type="submit" className="w-full">
+            <Button disabled={pending} type="submit" className="w-full">
               Login
             </Button>
           </div>
         </form>
       </CardContent>
       <CardFooter className="flex-col gap-2">
-        <Button variant="outline" className="w-full">
+        <Button disabled={pending} variant="outline" className="w-full" onClick={() => onProviderSignIn("google")}>
           Login with <FaGoogle />
         </Button>
-        <Button variant="outline" className="w-full" onClick={() => handleProviderSignIn("github")}>
+        <Button disabled={pending} variant="outline" className="w-full" onClick={() => onProviderSignIn("github")}>
           Login with <FaGithub />
         </Button>
       </CardFooter>
