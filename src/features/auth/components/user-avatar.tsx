@@ -6,8 +6,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useCurrentUser } from "../hooks/useCurrentUser";
@@ -25,12 +23,13 @@ const UserAvatar = () => {
   }
 
   const { name, email, image } = data;
-  const avatarFallback = name!.charAt(0).toUpperCase();
+  const initialSource = (name || email || "?").trim();
+  const avatarFallback = initialSource ? initialSource.charAt(0).toUpperCase() : "?";
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild className="outline-none relative">
         <Avatar className="size-10 hover:opacity-75 transition">
-          <AvatarImage alt={name} src={image} />
+          <AvatarImage alt={name || email || "User avatar"} src={image || undefined} />
           <AvatarFallback className="bg-slate-700 text-white">{avatarFallback}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>

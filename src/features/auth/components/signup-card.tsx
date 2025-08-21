@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { SignCardProps } from "../types";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { FormEvent, useState } from "react";
-import { TriangleAlert } from "lucide-react";
+import { AuthError } from "./auth-error";
 
 export const SignUpCard = ({ setSignFlow }: SignCardProps) => {
   const [name, setName] = useState("");
@@ -20,7 +20,8 @@ export const SignUpCard = ({ setSignFlow }: SignCardProps) => {
   const onPasswordSignUp = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      setError("Password do not match.");
+      setError("Passwords do not match.");
+      return;
     }
     setPending(true);
 
@@ -44,14 +45,9 @@ export const SignUpCard = ({ setSignFlow }: SignCardProps) => {
         <CardTitle>Sign up to continue</CardTitle>
         <CardDescription>Enter your email below to login to your account</CardDescription>
       </CardHeader>
-      {!!error && (
-        <div className="bg-destructive/15 p-3 rounded-md flex items-center gap-x-2 text-sm text-destructive">
-          <TriangleAlert className="size-4" />
-          <p>{error}</p>
-        </div>
-      )}
+      <AuthError message={error} />
       <CardContent>
-        <form onSubmit={onPasswordSignUp}>
+        <form onSubmit={onPasswordSignUp} aria-busy={pending}>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
               <Label htmlFor="email">Full Name</Label>
@@ -61,6 +57,7 @@ export const SignUpCard = ({ setSignFlow }: SignCardProps) => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="John Wall"
+                autoComplete="name"
                 required
               />
             </div>
@@ -73,6 +70,7 @@ export const SignUpCard = ({ setSignFlow }: SignCardProps) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="m@example.com"
+                autoComplete="email"
                 required
               />
             </div>
@@ -87,6 +85,7 @@ export const SignUpCard = ({ setSignFlow }: SignCardProps) => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
+                autoComplete="new-password"
                 required
               />
             </div>
@@ -101,10 +100,11 @@ export const SignUpCard = ({ setSignFlow }: SignCardProps) => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirm Password"
+                autoComplete="new-password"
                 required
               />
             </div>
-            <Button type="submit" className="w-full">
+            <Button disabled={pending} type="submit" className="w-full">
               Sign Up
             </Button>
           </div>

@@ -14,7 +14,7 @@ import { FaGithub, FaGoogle } from "react-icons/fa";
 import { SignCardProps } from "../types";
 import { FormEvent, useState } from "react";
 import { useAuthActions } from "@convex-dev/auth/react";
-import { TriangleAlert } from "lucide-react";
+import { AuthError } from "./auth-error";
 
 export const SignInCard = ({ setSignFlow }: SignCardProps) => {
   const [email, setEmail] = useState("");
@@ -56,14 +56,9 @@ export const SignInCard = ({ setSignFlow }: SignCardProps) => {
           </Button>
         </CardAction>
       </CardHeader>
-      {!!error && (
-        <div className="bg-destructive/15 p-3 rounded-md flex items-center gap-x-2 text-sm text-destructive">
-          <TriangleAlert className="size-4" />
-          <p>{error}</p>
-        </div>
-      )}
+      <AuthError message={error} />
       <CardContent>
-        <form onSubmit={onPasswordSignIn}>
+        <form onSubmit={onPasswordSignIn} aria-busy={pending}>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
@@ -74,15 +69,16 @@ export const SignInCard = ({ setSignFlow }: SignCardProps) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="m@example.com"
+                autoComplete="email"
                 required
               />
             </div>
             <div className="grid gap-2">
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
-                <a href="#" className="ml-auto inline-block text-sm underline-offset-4 hover:underline">
+                <button type="button" className="ml-auto inline-block text-sm underline-offset-4 hover:underline">
                   Forgot your password?
-                </a>
+                </button>
               </div>
               <Input
                 disabled={pending}
@@ -90,6 +86,7 @@ export const SignInCard = ({ setSignFlow }: SignCardProps) => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
                 required
               />
             </div>
