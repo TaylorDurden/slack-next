@@ -1,7 +1,29 @@
 import { atom, useAtom } from "jotai";
 
-const modalState = atom(false);
+interface CreateWorkspaceModalState {
+  isOpen: boolean;
+}
+
+const createWorkspaceModalAtom = atom<CreateWorkspaceModalState>({
+  isOpen: false,
+});
 
 export const useCreateWorkspaceModal = () => {
-  return useAtom(modalState);
+  const [state, setState] = useAtom(createWorkspaceModalAtom);
+
+  const setIsOpen = (isOpen: boolean) => {
+    setState({ isOpen });
+  };
+
+  const open = () => setIsOpen(true);
+  const close = () => setIsOpen(false);
+  const toggle = () => setIsOpen(!state.isOpen);
+
+  return {
+    isOpen: state.isOpen,
+    setIsOpen,
+    open,
+    close,
+    toggle,
+  };
 };

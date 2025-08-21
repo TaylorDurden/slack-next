@@ -7,26 +7,26 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 
 export default function Home() {
-  const [isOpen, setIsOpen] = useCreateWorkspaceModal();
+  const { isOpen, open } = useCreateWorkspaceModal();
   const router = useRouter();
   const workspaces = useGetWorkspaces();
-  const workspaceId = useMemo(() => {
+
+  const firstWorkspaceId = useMemo(() => {
     return workspaces?.[0]?._id;
   }, [workspaces]);
 
   useEffect(() => {
-    if (workspaceId) {
-      router.replace(`/workspaces/${workspaceId}`);
+    if (firstWorkspaceId) {
+      router.replace(`/workspaces/${firstWorkspaceId}`);
     } else if (!isOpen) {
-      setIsOpen(true);
+      open();
     }
-  }, [workspaceId, isOpen, setIsOpen, router]);
+  }, [firstWorkspaceId, isOpen, open, router]);
+
   return (
-    <div>
+    <div className="flex items-center justify-between p-4">
+      <h1 className="text-2xl font-bold">Welcome to Slack Clone</h1>
       <UserAvatar />
     </div>
   );
-}
-function createWorkspace() {
-  throw new Error("Function not implemented.");
 }
