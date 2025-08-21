@@ -34,3 +34,29 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## End-to-end tests (Playwright)
+
+This project includes Playwright-based E2E tests.
+
+- Install browsers and deps:
+
+```bash
+bunx playwright install --with-deps
+```
+
+- Run tests (starts the built app on a dev server):
+
+```bash
+bun run build
+bun run test:e2e
+```
+
+- Run tests headed or debug mode:
+
+```bash
+bun run test:e2e:headed
+bun run test:e2e:debug
+```
+
+By default, the tests expect the app on `http://localhost:3000` and will reuse an existing server if one is running. You can override the port by setting `PORT`.

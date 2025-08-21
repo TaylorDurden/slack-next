@@ -50,7 +50,7 @@ export const SignUpCard = ({ setSignFlow }: SignCardProps) => {
         <form onSubmit={onPasswordSignUp} aria-busy={pending}>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
-              <Label htmlFor="email">Full Name</Label>
+              <Label htmlFor="name">Full Name</Label>
               <Input
                 disabled={pending}
                 id="name"
@@ -91,7 +91,7 @@ export const SignUpCard = ({ setSignFlow }: SignCardProps) => {
             </div>
             <div className="grid gap-2">
               <div className="flex items-center">
-                <Label htmlFor="password">Confirm Password</Label>
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
               </div>
               <Input
                 disabled={pending}
