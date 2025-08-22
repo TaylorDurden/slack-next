@@ -5,14 +5,8 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { Id } from "../../../../convex/_generated/dataModel";
 
-interface WorkspacePageProps {
-  params: {
-    workspaceId: string;
-  };
-}
-
-export default function WorkspacePage({ params }: WorkspacePageProps) {
-  const { workspaceId } = params;
+export default function WorkspacePage() {
+  const { workspaceId } = useParams<{ workspaceId: string }>();
   const router = useRouter();
   const workspaces = useGetWorkspaces();
 

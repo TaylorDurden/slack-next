@@ -16,7 +16,7 @@ export default defineConfig({
   webServer: {
     command: "npm run build && next start -p " + PORT,
     url: `http://localhost:${PORT}`,
-    timeout: 120 * 1000,
+    timeout: 300 * 1000,
     reuseExistingServer: !process.env.CI,
     env: {
       NEXT_PUBLIC_CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL || "http://localhost:3399",
