@@ -19,11 +19,5 @@ export const useCreateWorkspaceModal = () => {
   const close = () => setIsOpen(false);
   const toggle = () => setIsOpen(!state.isOpen);
 
-  return {
-    isOpen: state.isOpen,
-    setIsOpen,
-    open,
-    close,
-    toggle,
-  };
+  return { isOpen: state.isOpen, setIsOpen, open, close, toggle };
 };

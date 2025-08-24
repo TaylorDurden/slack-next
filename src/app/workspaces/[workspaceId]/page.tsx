@@ -1,27 +1,23 @@
 "use client";
 
-import { useGetWorkspaces } from "@/features/workspaces/api/useGetWorkspaces";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { useGetWorkspaceById } from "@/features/workspaces/api/useGetWorkspaces";
+import { useRouter } from "next/navigation";
+import { useWorkspaceId } from "@/hooks/useWorkspaceId";
+import { useEffect } from "react";
 
 export default function WorkspacePage() {
-  const { workspaceId } = useParams<{ workspaceId: string }>();
+  const workspaceId = useWorkspaceId();
   const router = useRouter();
-  const workspaces = useGetWorkspaces();
-
-  const currentWorkspace = useMemo(() => {
-    return workspaces?.find((workspace) => workspace._id === workspaceId);
-  }, [workspaces, workspaceId]);
+  const { data: workspace } = useGetWorkspaceById({ id: workspaceId });
 
   useEffect(() => {
     // If workspaces are loaded but the current workspace doesn't exist, redirect to home
-    if (workspaces && workspaces.length > 0 && !currentWorkspace) {
-      router.replace("/");
-    }
-  }, [workspaces, currentWorkspace, router]);
+    // if (!workspace) {
+    //   router.replace("/");
+    // }
+  }, [workspace, router]);
 
-  if (!currentWorkspace) {
+  if (!workspace) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -42,9 +38,9 @@ export default function WorkspacePage() {
     <div className="p-6">
       <div className="max-w-4xl mx-auto">
         <header className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">{currentWorkspace.name}</h1>
-          <p className="text-gray-600 mt-2">Workspace ID: {currentWorkspace._id}</p>
-          <p className="text-gray-600">Join Code: {currentWorkspace.joinCode}</p>
+          <h1 className="text-3xl font-bold text-gray-900">{workspace.name}</h1>
+          <p className="text-gray-600 mt-2">Workspace ID: {workspace._id}</p>
+          <p className="text-gray-600">Join Code: {workspace.joinCode}</p>
         </header>
 
         <div className="bg-white rounded-lg shadow p-6">

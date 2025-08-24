@@ -18,14 +18,14 @@ export const get = query({
 });
 
 export const getById = query({
-  args: { workspaceId: v.id("workspaces") },
+  args: { id: v.id("workspaces") },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
     if (!userId) {
       throw new Error("Unauthorized!");
     }
 
-    const workspace = await ctx.db.get(args.workspaceId);
+    const workspace = await ctx.db.get(args.id);
     if (!workspace) {
       throw new Error("Workspace not found!");
     }
