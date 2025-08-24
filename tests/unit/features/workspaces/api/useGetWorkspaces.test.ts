@@ -1,11 +1,12 @@
 import { renderHook } from "@testing-library/react";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { useGetWorkspaces } from "@/features/workspaces/api/useGetWorkspaces";
+import { api } from "../../../../../convex/_generated/api";
 
 // Mock Convex
 const mockQuery = vi.fn();
 vi.mock("convex/react", () => ({
-  useQuery: () => mockQuery(),
+  useQuery: (query: any, args: any) => mockQuery(query, args),
 }));
 
 describe("useGetWorkspaces", () => {
@@ -23,32 +24,36 @@ describe("useGetWorkspaces", () => {
 
     const { result } = renderHook(() => useGetWorkspaces());
 
-    expect(mockQuery).toHaveBeenCalled();
-    expect(result.current).toEqual(mockWorkspaces);
+    expect(mockQuery).toHaveBeenCalledWith(api.workspaces.get, undefined);
+    expect(result.current.data).toEqual(mockWorkspaces);
+    expect(result.current.isLoading).toBe(false);
   });
 
-  it("should return undefined when query returns undefined", () => {
+  it("should return undefined data and isLoading true when query returns undefined", () => {
     mockQuery.mockReturnValue(undefined);
 
     const { result } = renderHook(() => useGetWorkspaces());
 
-    expect(result.current).toBeUndefined();
+    expect(result.current.data).toBeUndefined();
+    expect(result.current.isLoading).toBe(true);
   });
 
-  it("should return empty array when query returns empty array", () => {
+  it("should return empty array and isLoading false when query returns empty array", () => {
     mockQuery.mockReturnValue([]);
 
     const { result } = renderHook(() => useGetWorkspaces());
 
-    expect(result.current).toEqual([]);
+    expect(result.current.data).toEqual([]);
+    expect(result.current.isLoading).toBe(false);
   });
 
-  it("should return null when query returns null", () => {
+  it("should return null data and isLoading true when query returns null", () => {
     mockQuery.mockReturnValue(null);
 
     const { result } = renderHook(() => useGetWorkspaces());
 
-    expect(result.current).toBeNull();
+    expect(result.current.data).toBeNull();
+    expect(result.current.isLoading).toBe(true);
   });
 
   it("should handle workspace data structure correctly", () => {
@@ -65,12 +70,13 @@ describe("useGetWorkspaces", () => {
 
     const { result } = renderHook(() => useGetWorkspaces());
 
-    expect(result.current).toHaveLength(1);
-    expect(result.current?.[0]).toMatchObject({
+    expect(result.current.data).toHaveLength(1);
+    expect(result.current.data?.[0]).toMatchObject({
       _id: "workspace123",
       name: "Test Workspace",
       userId: "user456",
       joinCode: "ABC123",
     });
+    expect(result.current.isLoading).toBe(false);
   });
 });

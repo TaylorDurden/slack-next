@@ -9,7 +9,7 @@ import { useEffect, useMemo } from "react";
 export default function Home() {
   const { isOpen, open } = useCreateWorkspaceModal();
   const router = useRouter();
-  const workspaces = useGetWorkspaces();
+  const { data: workspaces } = useGetWorkspaces();
 
   const firstWorkspaceId = useMemo(() => {
     return workspaces?.[0]?._id;

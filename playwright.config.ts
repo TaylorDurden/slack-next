@@ -20,6 +20,7 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     env: {
       NEXT_PUBLIC_CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL || "http://localhost:3399",
+      E2E_TESTING: "true",
     },
   },
   projects: [

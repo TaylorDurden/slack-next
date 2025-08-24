@@ -17,5 +17,6 @@ export default defineConfig({
     css: true,
     globals: true,
     include: ["tests/unit/**/*.{ts,tsx}"],
+    exclude: ["tests/unit/test-utils.tsx"],
   },
 });
