@@ -1,3 +1,5 @@
+"use client";
+
 import UserAvatar from "@/features/auth/components/user-avatar";
 import React from "react";
 import { WorkspaceSwitcher } from "./workspaceSwitcher";

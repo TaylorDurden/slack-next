@@ -4,34 +4,31 @@ import { useGetWorkspaceById } from "@/features/workspaces/api/useGetWorkspaces"
 import { useRouter } from "next/navigation";
 import { useWorkspaceId } from "@/hooks/useWorkspaceId";
 import { useEffect } from "react";
+import { Loader } from "lucide-react";
 
 export default function WorkspacePage() {
   const workspaceId = useWorkspaceId();
   const router = useRouter();
-  const { data: workspace } = useGetWorkspaceById({ id: workspaceId });
+  const { data: workspace, isLoading } = useGetWorkspaceById({
+    id: workspaceId,
+  });
 
   useEffect(() => {
-    // If workspaces are loaded but the current workspace doesn't exist, redirect to home
-    // if (!workspace) {
-    //   router.replace("/");
-    // }
-  }, [workspace, router]);
+    if (!isLoading && !workspace) {
+      router.replace("/");
+    }
+  }, [isLoading, workspace, router]);
 
-  if (!workspace) {
+  if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-2">Workspace not found</h1>
-          <p className="text-gray-600 mb-4">The workspace you&apos;re looking for doesn&apos;t exist.</p>
-          <button
-            onClick={() => router.push("/")}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Go back home
-          </button>
-        </div>
+      <div className="h-full flex items-center justify-center">
+        <Loader className="size-10 animate-spin" />
       </div>
     );
+  }
+
+  if (!workspace) {
+    return null;
   }
 
   return (
