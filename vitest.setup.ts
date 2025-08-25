@@ -14,3 +14,11 @@ vi.mock("@convex-dev/auth/react", () => {
     }),
   } as unknown as typeof import("@convex-dev/auth/react");
 });
+
+const ResizeObserverMock = vi.fn(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+}));
+
+vi.stubGlobal('ResizeObserver', ResizeObserverMock);
