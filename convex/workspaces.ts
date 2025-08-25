@@ -7,13 +7,25 @@ export const get = query({
   handler: async (ctx) => {
     const userId = await getAuthUserId(ctx);
     if (!userId) {
-      throw new Error("Unauthorized!");
+      return [];
     }
 
-    return ctx.db
-      .query("workspaces")
-      .filter((q) => q.eq(q.field("userId"), userId))
+    const members = await ctx.db
+      .query("members")
+      .withIndex("by_user_id", (q) => q.eq("userId", userId))
       .collect();
+
+    const workspaceIds = members.map((member) => member.workspaceId);
+    const workspaces = [];
+
+    for (const workspaceId of workspaceIds) {
+      const workspace = await ctx.db.get(workspaceId);
+      if (workspace) {
+        workspaces.push(workspace);
+      }
+    }
+
+    return workspaces;
   },
 });
 
@@ -23,6 +35,15 @@ export const getById = query({
     const userId = await getAuthUserId(ctx);
     if (!userId) {
       throw new Error("Unauthorized!");
+    }
+
+    const member = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_and_user_id", (q) => q.eq("workspaceId", args.id).eq("userId", userId))
+      .unique();
+
+    if (!member) {
+      return null;
     }
 
     const workspace = await ctx.db.get(args.id);
@@ -79,6 +100,12 @@ export const create = mutation({
       name: trimmedName,
       userId,
       joinCode,
+    });
+
+    await ctx.db.insert("members", {
+      userId,
+      workspaceId,
+      role: "admin",
     });
 
     return workspaceId;
