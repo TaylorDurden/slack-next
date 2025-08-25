@@ -1,6 +1,9 @@
+"use client";
 import React from "react";
 import { ToolBar } from "./toolbar";
 import { SideBar } from "./sidebar";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { WorkspaceSidebar } from "./workspaceSidebar";
 
 const WorkspaceIdPageLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -8,7 +11,13 @@ const WorkspaceIdPageLayout = ({ children }: { children: React.ReactNode }) => {
       <ToolBar />
       <div className="flex h-[calc(100vh-40px)]">
         <SideBar />
-        {children}
+        <ResizablePanelGroup autoSaveId="rpg-workspace-layout" direction="horizontal">
+          <ResizablePanel defaultSize={20} minSize={11} maxSize={40} className="bg-[#5E2C5F]">
+            <WorkspaceSidebar />
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel minSize={50}>{children}</ResizablePanel>
+        </ResizablePanelGroup>
       </div>
     </div>
   );
