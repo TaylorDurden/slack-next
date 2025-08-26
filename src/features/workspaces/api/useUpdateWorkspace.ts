@@ -3,18 +3,19 @@ import { api } from "../../../../convex/_generated/api";
 import { useCallback, useMemo, useState } from "react";
 import { Id } from "../../../../convex/_generated/dataModel";
 
-export interface CreateWorkspaceOptions {
+export interface UpdateWorkspaceOptions {
   onSuccess?: (workspaceId: Id<"workspaces">) => void;
   onError?: (error: Error) => void;
   onSettled?: () => void;
   throwError?: boolean;
 }
 
-export interface CreateWorkspaceRequest {
+export interface UpdateWorkspaceRequest {
+  id: Id<"workspaces">;
   name: string;
 }
 
-export interface CreateWorkspaceState {
+export interface UpdateWorkspaceState {
   data: Id<"workspaces"> | null;
   error: Error | null;
   isPending: boolean;
@@ -23,7 +24,7 @@ export interface CreateWorkspaceState {
   isSettled: boolean;
 }
 
-export const useCreateWorkspace = () => {
+export const useUpdateWorkspace = () => {
   const [data, setData] = useState<Id<"workspaces"> | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [status, setStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
@@ -33,10 +34,10 @@ export const useCreateWorkspace = () => {
   const isSuccess = useMemo(() => status === "success", [status]);
   const isSettled = useMemo(() => status === "success" || status === "error", [status]);
 
-  const mutation = useMutation(api.workspaces.create);
+  const mutation = useMutation(api.workspaces.update);
 
   const mutate = useCallback(
-    async (values: CreateWorkspaceRequest, options?: CreateWorkspaceOptions) => {
+    async (values: UpdateWorkspaceRequest, options?: UpdateWorkspaceOptions) => {
       try {
         setData(null);
         setError(null);
@@ -50,7 +51,7 @@ export const useCreateWorkspace = () => {
 
         return workspaceId;
       } catch (err) {
-        const error = err instanceof Error ? err : new Error("Failed to create workspace");
+        const error = err instanceof Error ? err : new Error("Failed to update workspace");
         setError(error);
         setStatus("error");
         options?.onError?.(error);

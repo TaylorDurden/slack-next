@@ -23,7 +23,7 @@ export const WorkspaceSwitcher = () => {
   const { data: workspace, isLoading: workspaceLoading } = useGetWorkspaceById({ id });
   const { data: workspaces, isLoading: workspacesLoading } = useGetWorkspaces();
 
-  const filteredWorkspaces = workspaces?.filter((ws) => ws._id !== id);
+  const filteredWorkspaces = workspaces?.filter((ws) => ws._id !== id) ?? [];
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -59,18 +59,15 @@ export const WorkspaceSwitcher = () => {
               <p className="truncate">{ws?.name}</p>
             </DropdownMenuItem>
           ))}
+          {filteredWorkspaces.length > 0 && <DropdownMenuSeparator />}
         </DropdownMenuGroup>
-        <DropdownMenuSeparator />
+
         <DropdownMenuGroup>
           <DropdownMenuItem className="cursor-pointer" onClick={() => setIsOpen(true)}>
             <div className="size-9 relative overflow-hidden bg-[#F2f2f2] text-slate-800 font-semibold text-lg rounded-md flex justify-center items-center mr-2">
               <Plus />
             </div>
             New Workspace
-            {/* New Workspace
-          <DropdownMenuShortcut>
-            <Plus />
-          </DropdownMenuShortcut> */}
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>

@@ -5,19 +5,20 @@ import { useRouter } from "next/navigation";
 import { useWorkspaceId } from "@/hooks/useWorkspaceId";
 import { useEffect } from "react";
 import { Loader } from "lucide-react";
+import { Id } from "../../../../convex/_generated/dataModel";
 
 export default function WorkspacePage() {
   const workspaceId = useWorkspaceId();
   const router = useRouter();
   const { data: workspace, isLoading } = useGetWorkspaceById({
-    id: workspaceId,
+    id: workspaceId as Id<"workspaces"> | undefined,
   });
 
   useEffect(() => {
-    if (!isLoading && !workspace) {
+    if (!isLoading && !workspace && workspaceId) {
       router.replace("/");
     }
-  }, [isLoading, workspace, router]);
+  }, [isLoading, workspace, router, workspaceId]);
 
   if (isLoading) {
     return (
