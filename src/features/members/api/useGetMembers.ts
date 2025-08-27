@@ -6,3 +6,8 @@ export const useCurrentMember = ({ workspaceId }: { workspaceId: Id<"workspaces"
   const data = useQuery(api.members.current, { workspaceId });
   return { data, isLoading: !data };
 };
+
+export const useGetMembers = ({ workspaceId }: { workspaceId: Id<"workspaces"> }) => {
+  const data = useQuery(api.members.get, { workspaceId });
+  return { data, isLoading: !data };
+};

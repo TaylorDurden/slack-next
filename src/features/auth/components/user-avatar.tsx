@@ -30,7 +30,7 @@ const UserAvatar = () => {
       <DropdownMenuTrigger asChild className="outline-none relative">
         <Avatar className="size-10 hover:opacity-75 transition">
           <AvatarImage alt={name || email || "User avatar"} src={image || undefined} />
-          <AvatarFallback className="bg-slate-700 text-white">{avatarFallback}</AvatarFallback>
+          <AvatarFallback className="rounded-md bg-pink-500 text-white text-sm">{avatarFallback}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="center" side="right" className="w-60">

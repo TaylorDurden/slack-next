@@ -23,7 +23,7 @@ export const WorkspaceHeader = ({ workspace, isAdmin }: WorkspaceHeaderProps) =>
   return (
     <>
       <PreferencesModal open={openPreferences} setOpen={setPreferencesOpen} initialWorkspaceName={workspace.name} />
-      <div className="flex items-center justify-between px-4 h-[49px] gap-0.5">
+      <div className="flex items-center justify-between px-2 h-[49px] gap-0.5">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="transparent" size="sm" className="font-semibold text-lg w-auto p-1.5 overflow-hidden">

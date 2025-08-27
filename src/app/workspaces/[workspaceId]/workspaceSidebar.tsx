@@ -1,16 +1,23 @@
 import React from "react";
-import { useCurrentMember } from "@/features/members/api/useGetMembers";
+import { useCurrentMember, useGetMembers } from "@/features/members/api/useGetMembers";
 import { useGetWorkspaceById } from "@/features/workspaces/api/useGetWorkspaces";
 import { useWorkspaceId } from "@/hooks/useWorkspaceId";
-import { AlertTriangle, Loader } from "lucide-react";
+import { AlertTriangle, HashIcon, Loader, MessageSquareText, SendHorizontal } from "lucide-react";
 import { WorkspaceHeader } from "./workspaceHeader";
+import { WorkspaceSidebarItem } from "./workspaceSidebarItem";
+import { useGetChannels } from "@/features/channels/api/useGetChannels";
+import { Doc } from "../../../../convex/_generated/dataModel";
+import { WorkspaceSection } from "./workspaceSection";
+import { WorkspaceMemberItem } from "./workspaceMemberItem";
 
 export const WorkspaceSidebar = () => {
   const workspaceId = useWorkspaceId();
-  const { data: member, isLoading: membersLoading } = useCurrentMember({ workspaceId });
+  const { data: member, isLoading: memberLoading } = useCurrentMember({ workspaceId });
   const { data: workspace, isLoading: workspaceLoading } = useGetWorkspaceById({ id: workspaceId });
+  const { data: channels, isLoading: channelsLoading } = useGetChannels({ workspaceId });
+  const { data: members, isLoading: membersLoading } = useGetMembers({ workspaceId });
 
-  if (membersLoading || workspaceLoading) {
+  if (memberLoading || workspaceLoading) {
     return (
       <div data-testid="loader" className="flex flex-col bg-[#5E2C5F] h-full items-center justify-center">
         <Loader className="size-5 animate-spin text-white" />
@@ -30,6 +37,18 @@ export const WorkspaceSidebar = () => {
   return (
     <div className="flex flex-col h-full">
       <WorkspaceHeader workspace={workspace} isAdmin={member?.role === "admin"} />
+      <div className="flex flex-col px-2 mt-3">
+        <WorkspaceSidebarItem label="Threads" icon={MessageSquareText} id="threads" />
+        <WorkspaceSidebarItem label="Drafts & Sent" icon={SendHorizontal} id="drafts" />
+      </div>
+      <WorkspaceSection label="Channels" hintText="New Channel" onNew={() => {}}>
+        {channels?.map((channel: Doc<"channels">) => (
+          <WorkspaceSidebarItem key={channel._id} label={channel.name} icon={HashIcon} id={channel._id} />
+        ))}
+      </WorkspaceSection>
+      <WorkspaceSection label="Direct Messages" hintText="New DM" onNew={() => {}}>
+        {members?.map((m) => <WorkspaceMemberItem key={m._id} label={m.user.name} image={m.user.image} id={m._id} />)}
+      </WorkspaceSection>
     </div>
   );
 };

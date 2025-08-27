@@ -34,7 +34,7 @@ export const getById = query({
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
     if (!userId) {
-      throw new Error("Unauthorized!");
+      return null;
     }
 
     const member = await ctx.db
@@ -52,7 +52,7 @@ export const getById = query({
     }
 
     if (workspace.userId !== userId) {
-      throw new Error("Unauthorized access to workspace!");
+      return null;
     }
 
     return workspace;
@@ -66,7 +66,7 @@ export const create = mutation({
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
     if (!userId) {
-      throw new Error("Unauthorized!");
+      return null;
     }
 
     // Validate workspace name
@@ -90,7 +90,7 @@ export const create = mutation({
       .first();
 
     if (existingWorkspace) {
-      throw new Error("A workspace with this name already exists!");
+      return null;
     }
 
     // Generate a unique join code
@@ -106,6 +106,11 @@ export const create = mutation({
       userId,
       workspaceId,
       role: "admin",
+    });
+
+    await ctx.db.insert("channels", {
+      name: "General",
+      workspaceId,
     });
 
     return workspaceId;
@@ -133,11 +138,11 @@ export const update = mutation({
 
     const workspace = await ctx.db.get(args.id);
     if (!workspace) {
-      throw new Error("Workspace not found!");
+      return null;
     }
 
     if (workspace.userId !== userId) {
-      throw new Error("Unauthorized access to workspace!");
+      return null;
     }
 
     const updates: { name?: string } = {};
@@ -165,7 +170,7 @@ export const update = mutation({
         .first();
 
       if (existingWorkspace) {
-        throw new Error("A workspace with this name already exists!");
+        return null;
       }
 
       updates.name = trimmedName;
@@ -187,16 +192,16 @@ export const remove = mutation({
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
     if (!userId) {
-      throw new Error("Unauthorized!");
+      return null;
     }
 
     const workspace = await ctx.db.get(args.id);
     if (!workspace) {
-      throw new Error("Workspace not found!");
+      return null;
     }
 
     if (workspace.userId !== userId) {
-      throw new Error("Unauthorized access to workspace!");
+      return null;
     }
 
     const member = await ctx.db
@@ -205,7 +210,7 @@ export const remove = mutation({
       .unique();
 
     if (!member || member.role !== "admin") {
-      throw new Error("Unauthorized remove the workspace!");
+      return null;
     }
 
     await ctx.db.delete(args.id);
