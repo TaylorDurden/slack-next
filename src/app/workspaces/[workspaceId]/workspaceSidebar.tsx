@@ -9,9 +9,11 @@ import { useGetChannels } from "@/features/channels/api/useGetChannels";
 import { Doc } from "../../../../convex/_generated/dataModel";
 import { WorkspaceSection } from "./workspaceSection";
 import { WorkspaceMemberItem } from "./workspaceMemberItem";
+import { useCreateChannelModal } from "@/features/channels/store/useCreateWorkspaceModal";
 
 export const WorkspaceSidebar = () => {
   const workspaceId = useWorkspaceId();
+  const { isOpen, setIsOpen } = useCreateChannelModal();
   const { data: member, isLoading: memberLoading } = useCurrentMember({ workspaceId });
   const { data: workspace, isLoading: workspaceLoading } = useGetWorkspaceById({ id: workspaceId });
   const { data: channels, isLoading: channelsLoading } = useGetChannels({ workspaceId });
@@ -41,7 +43,11 @@ export const WorkspaceSidebar = () => {
         <WorkspaceSidebarItem label="Threads" icon={MessageSquareText} id="threads" />
         <WorkspaceSidebarItem label="Drafts & Sent" icon={SendHorizontal} id="drafts" />
       </div>
-      <WorkspaceSection label="Channels" hintText="New Channel" onNew={() => {}}>
+      <WorkspaceSection
+        label="Channels"
+        hintText="New Channel"
+        onNew={member.role === "admin" ? () => setIsOpen(true) : undefined}
+      >
         {channels?.map((channel: Doc<"channels">) => (
           <WorkspaceSidebarItem key={channel._id} label={channel.name} icon={HashIcon} id={channel._id} />
         ))}

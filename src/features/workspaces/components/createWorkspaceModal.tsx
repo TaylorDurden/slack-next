@@ -16,9 +16,9 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export const CreateWorkspaceModal = () => {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState("");
-  const router = useRouter();
   const { isOpen, close } = useCreateWorkspaceModal();
   const { mutate, isPending, error, reset } = useCreateWorkspace();
 
