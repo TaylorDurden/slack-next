@@ -228,6 +228,35 @@ export const remove = mutation({
   },
 });
 
+export const regenerateJoinCode = mutation({
+  args: {
+    workspaceId: v.id("workspaces"),
+  },
+  handler: async (ctx, args) => {
+    const workspace = await ctx.db.get(args.workspaceId);
+    if (!workspace) {
+      return null;
+    }
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      return null;
+    }
+
+    const member = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_and_user_id", (q) => q.eq("workspaceId", args.workspaceId).eq("userId", userId))
+      .unique();
+
+    if (!member) {
+      return null;
+    }
+
+    const newJoinCode = generateJoinCode();
+    await ctx.db.patch(args.workspaceId, { joinCode: newJoinCode });
+    return newJoinCode;
+  },
+});
+
 // Helper function to generate a unique join code
 function generateJoinCode(): string {
   // Generate a 6-character alphanumeric code
