@@ -24,7 +24,7 @@ export const InviteModal = ({ open, setOpen }: InviteModalProps) => {
   const workspaceId = useWorkspaceId();
   const { data: workspace, isLoading: workspaceLoading } = useGetWorkspaceById({ id: workspaceId });
   const handleCopyInviteLink = () => {
-    const copyLink = `${window.location.origin}/workspaces/${workspaceId}/join/${workspace?.joinCode}`;
+    const copyLink = `${window.location.origin}/join/${workspaceId}/code/${workspace?.joinCode}`;
     navigator.clipboard.writeText(copyLink).then(() => toast.success("Invite link copied to clipboard!"));
   };
   const { mutate, isPending: isRegenerating } = useWorkspaceRegenerateJoinCode();

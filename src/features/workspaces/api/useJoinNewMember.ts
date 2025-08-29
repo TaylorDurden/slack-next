@@ -3,18 +3,19 @@ import { api } from "../../../../convex/_generated/api";
 import { useCallback, useMemo, useState } from "react";
 import { Id } from "../../../../convex/_generated/dataModel";
 
-export interface CreateWorkspaceOptions {
+export interface CreateJoinNewMemberOptions {
   onSuccess?: (workspaceId: Id<"workspaces">) => void;
   onError?: (error: Error) => void;
   onSettled?: () => void;
   throwError?: boolean;
 }
 
-export interface CreateWorkspaceRequest {
-  name: string;
+export interface CreateJoinNewMemberRequest {
+  workspaceId: Id<"workspaces">;
+  newJoinCode: string;
 }
 
-export interface CreateWorkspaceState {
+export interface CreateJoinNewMemberState {
   data: Id<"workspaces"> | null;
   error: Error | null;
   isPending: boolean;
@@ -23,7 +24,7 @@ export interface CreateWorkspaceState {
   isSettled: boolean;
 }
 
-export const useCreateWorkspace = () => {
+export const useJoinNewMember = () => {
   const [data, setData] = useState<Id<"workspaces"> | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [status, setStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
@@ -33,10 +34,10 @@ export const useCreateWorkspace = () => {
   const isSuccess = useMemo(() => status === "success", [status]);
   const isSettled = useMemo(() => status === "success" || status === "error", [status]);
 
-  const mutation = useMutation(api.workspaces.create);
+  const mutation = useMutation(api.workspaces.joinNewMember);
 
   const mutate = useCallback(
-    async (values: CreateWorkspaceRequest, options?: CreateWorkspaceOptions) => {
+    async (values: CreateJoinNewMemberRequest, options?: CreateJoinNewMemberOptions) => {
       try {
         setData(null);
         setError(null);

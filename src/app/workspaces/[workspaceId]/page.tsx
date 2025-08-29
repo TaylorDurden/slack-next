@@ -11,7 +11,7 @@ export default function WorkspacePage() {
   const workspaceId = useWorkspaceId();
   const router = useRouter();
   const { data: workspace, isLoading } = useGetWorkspaceById({
-    id: workspaceId as Id<"workspaces"> | undefined,
+    id: workspaceId as Id<"workspaces">,
   });
 
   useEffect(() => {

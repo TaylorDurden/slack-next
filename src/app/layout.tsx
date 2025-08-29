@@ -33,7 +33,7 @@ export default function RootLayout({
         <ConvexAuthNextjsServerProvider>
           <ConvexClientProvider>
             <JotaiProvider>
-              <Toaster />
+              <Toaster richColors />
               <Modals />
               {children}
             </JotaiProvider>

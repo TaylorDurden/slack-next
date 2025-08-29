@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { Id } from "../../../../convex/_generated/dataModel";
 
 export interface CreateWorkspaceRegenerateJoinCodeOptions {
-  onSuccess?: (newCode: string | null) => void;
+  onSuccess?: (workspaceId: Id<"workspaces"> | null) => void;
   onError?: (error: Error) => void;
   onSettled?: () => void;
   throwError?: boolean;
@@ -15,7 +15,7 @@ export interface CreateWorkspaceRegenerateJoinCodeRequest {
 }
 
 export interface CreateWorkspaceRegenerateJoinCodeState {
-  data: string | null;
+  data: Id<"workspaces"> | null;
   error: Error | null;
   isPending: boolean;
   isError: boolean;
@@ -42,13 +42,13 @@ export const useWorkspaceRegenerateJoinCode = () => {
         setError(null);
         setStatus("pending");
 
-        const newJoinCode = await mutation(values);
+        const workspaceId = await mutation(values);
 
-        setData(newJoinCode);
+        setData(workspaceId);
         setStatus("success");
-        options?.onSuccess?.(newJoinCode);
+        options?.onSuccess?.(workspaceId);
 
-        return newJoinCode;
+        return workspaceId;
       } catch (err) {
         const error = err instanceof Error ? err : new Error("Failed to regenerate join code");
         setError(error);
