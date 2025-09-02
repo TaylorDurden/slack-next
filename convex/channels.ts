@@ -28,6 +28,32 @@ export const get = query({
   },
 });
 
+export const getById = query({
+  args: { id: v.id("channels") },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      return null;
+    }
+
+    const channel = await ctx.db.get(args.id);
+    if (!channel) {
+      return null;
+    }
+
+    const member = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_and_user_id", (q) => q.eq("workspaceId", channel.workspaceId).eq("userId", userId))
+      .unique();
+
+    if (!member) {
+      return null;
+    }
+
+    return channel;
+  },
+});
+
 export const create = mutation({
   args: {
     name: v.string(),
@@ -77,5 +103,91 @@ export const create = mutation({
       name: args.name,
       workspaceId: args.workspaceId,
     });
+  },
+});
+
+export const update = mutation({
+  args: {
+    id: v.id("channels"),
+    name: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error("Unauthorized!");
+    }
+
+    const channel = await ctx.db.get(args.id);
+    if (!channel) {
+      throw new Error("Channel not found!");
+    }
+
+    const member = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_and_user_id", (q) => q.eq("workspaceId", channel.workspaceId).eq("userId", userId))
+      .unique();
+
+    if (!member || member.role !== "admin") {
+      throw new Error("Unauthorized!");
+    }
+
+    let trimmedName = args.name.trim();
+    if (!trimmedName) {
+      throw new Error("Channel name is required!");
+    }
+
+    if (trimmedName.length < 3) {
+      throw new Error("Channel name must be at least 3 characters!");
+    }
+
+    if (trimmedName.length > 50) {
+      throw new Error("Channel name must be less than 50 characters!");
+    }
+    trimmedName = trimmedName.replace(/\s+/g, "-").toLowerCase();
+
+    const existingChannel = await ctx.db
+      .query("channels")
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("name"), trimmedName),
+          q.eq(q.field("workspaceId"), channel.workspaceId),
+          q.neq(q.field("_id"), args.id)
+        )
+      )
+      .first();
+
+    if (existingChannel) {
+      throw new Error("Channel with this name already exists!");
+    }
+
+    await ctx.db.patch(args.id, { name: trimmedName });
+  },
+});
+
+export const remove = mutation({
+  args: { id: v.id("channels") },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error("Unauthorized!");
+    }
+
+    const channel = await ctx.db.get(args.id);
+    if (!channel) {
+      throw new Error("Channel not found!");
+    }
+
+    const member = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_and_user_id", (q) => q.eq("workspaceId", channel.workspaceId).eq("userId", userId))
+      .unique();
+
+    if (!member || member.role !== "admin") {
+      throw new Error("Unauthorized!");
+    }
+
+    //TODO: Remove all associated messages
+
+    await ctx.db.delete(args.id);
   },
 });

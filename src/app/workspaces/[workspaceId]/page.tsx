@@ -10,6 +10,7 @@ import { useGetChannels } from "@/features/channels/api/useGetChannels";
 import { useCreateChannelModal } from "@/features/channels/store/useCreateWorkspaceModal";
 import { useCurrentMember } from "@/features/members/api/useGetMembers";
 import Link from "next/link";
+import { AlertHome } from "@/components/alertHome";
 
 export default function WorkspaceIdPage() {
   const router = useRouter();
@@ -58,18 +59,12 @@ export default function WorkspaceIdPage() {
   }
 
   if (workspaceLoading || !workspace) {
-    return (
-      <div className="h-full flex flex-1 items-center justify-center flex-col gap-2">
-        <TriangleAlert className="size-6 text-muted-foreground" data-testid="loader" />
-        <span className="text-sm text-muted-foreground">Workspace not found</span>
-        <Link href={"/"}>Back to Home</Link>
-      </div>
-    );
+    return <AlertHome message="Workspace not found" />;
   }
 
   return (
     <div className="h-full flex flex-1 items-center justify-center flex-col gap-2">
-      <TriangleAlert className="size-6 animate-spin text-muted-foreground" data-testid="loader" />
+      <TriangleAlert className="size-6 text-muted-foreground" data-testid="loader" />
       <span className="text-sm text-muted-foreground">Channel not found</span>
     </div>
   );

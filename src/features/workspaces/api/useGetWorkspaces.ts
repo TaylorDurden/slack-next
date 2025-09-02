@@ -4,12 +4,12 @@ import { Id } from "../../../../convex/_generated/dataModel";
 
 export const useGetWorkspaces = () => {
   const data = useQuery(api.workspaces.get);
-  return { data, isLoading: !data };
+  return { data, isLoading: data === undefined };
 };
 
 export const useGetWorkspaceById = ({ id }: { id: Id<"workspaces"> }) => {
   const data = useQuery(api.workspaces.getById, { id });
-  return { data, isLoading: !data };
+  return { data, isLoading: data === undefined };
 };
 
 /**
@@ -19,5 +19,5 @@ export const useGetWorkspaceById = ({ id }: { id: Id<"workspaces"> }) => {
  */
 export const useGetWorkspaceInfoById = ({ workspaceId }: { workspaceId: Id<"workspaces"> }) => {
   const data = useQuery(api.workspaces.getInfoById, { workspaceId });
-  return { data, isLoading: !data };
+  return { data, isLoading: data === undefined };
 };

@@ -1,6 +1,6 @@
 import { useApiMutation } from "@/hooks/useApiMutation";
 import { api } from "../../../../convex/_generated/api";
 
-export const useUpdateWorkspace = () => {
-  return useApiMutation(api.workspaces.update);
+export const useRemoveChannel = () => {
+  return useApiMutation(api.channels.remove);
 };
