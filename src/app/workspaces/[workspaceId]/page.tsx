@@ -2,53 +2,75 @@
 
 import { useGetWorkspaceById } from "@/features/workspaces/api/useGetWorkspaces";
 import { useRouter } from "next/navigation";
-import { useWorkspaceId } from "@/hooks/useWorkspaceId";
-import { useEffect } from "react";
-import { Loader } from "lucide-react";
+import { useWorkspaceId } from "@/hooks/useSearchParams";
+import { useEffect, useMemo } from "react";
+import { Loader, TriangleAlert } from "lucide-react";
 import { Id } from "../../../../convex/_generated/dataModel";
+import { useGetChannels } from "@/features/channels/api/useGetChannels";
+import { useCreateChannelModal } from "@/features/channels/store/useCreateWorkspaceModal";
+import { useCurrentMember } from "@/features/members/api/useGetMembers";
+import Link from "next/link";
 
-export default function WorkspacePage() {
-  const workspaceId = useWorkspaceId();
+export default function WorkspaceIdPage() {
   const router = useRouter();
-  const { data: workspace, isLoading } = useGetWorkspaceById({
-    id: workspaceId as Id<"workspaces">,
+  const workspaceId = useWorkspaceId();
+  const { data: workspace, isLoading: workspaceLoading } = useGetWorkspaceById({
+    id: workspaceId,
   });
+  // const { isOpen, open, close } = useCreateWorkspaceModal();
+  const { data: member, isLoading: memberLoading } = useCurrentMember({ workspaceId });
+  const { isOpen, open } = useCreateChannelModal();
+  const { data: channels, isLoading: channelsLoading } = useGetChannels({ workspaceId });
+
+  const channelId = useMemo(() => channels?.[0]?._id, [channels]);
+  const isAdmin = useMemo(() => member?.role === "admin", [member]);
 
   useEffect(() => {
-    if (!isLoading && !workspace && workspaceId) {
-      router.replace("/");
+    if (workspaceLoading || channelsLoading || memberLoading || !member || !workspace) {
+      return;
     }
-  }, [isLoading, workspace, router, workspaceId]);
 
-  if (isLoading) {
+    if (channelId) {
+      router.push(`/workspaces/${workspaceId}/channels/${channelId}`);
+    } else if (!isOpen && isAdmin) {
+      open();
+    }
+  }, [
+    workspaceLoading,
+    workspace,
+    router,
+    workspaceId,
+    channelsLoading,
+    channelId,
+    isOpen,
+    open,
+    memberLoading,
+    member,
+    isAdmin,
+  ]);
+
+  if (channelsLoading) {
     return (
-      <div className="h-full flex items-center justify-center">
-        <Loader className="size-10 animate-spin" data-testid="loader" />
+      <div className="h-full flex flex-1 items-center justify-center flex-col gap-2">
+        <Loader className="size-6 text-muted-foreground" data-testid="loader" />
       </div>
     );
   }
 
-  if (!workspace) {
-    return null;
+  if (workspaceLoading || !workspace) {
+    return (
+      <div className="h-full flex flex-1 items-center justify-center flex-col gap-2">
+        <TriangleAlert className="size-6 text-muted-foreground" data-testid="loader" />
+        <span className="text-sm text-muted-foreground">Workspace not found</span>
+        <Link href={"/"}>Back to Home</Link>
+      </div>
+    );
   }
 
   return (
-    <div className="p-6">
-      <div className="max-w-4xl mx-auto">
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">{workspace.name}</h1>
-          <p className="text-gray-600 mt-2">Workspace ID: {workspace._id}</p>
-          <p className="text-gray-600">Join Code: {workspace.joinCode}</p>
-        </header>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Workspace Overview</h2>
-          <p className="text-gray-600">
-            Welcome to your workspace! This is where you&apos;ll be able to collaborate with your team.
-          </p>
-          <p className="text-gray-600 mt-2">More features coming soon...</p>
-        </div>
-      </div>
+    <div className="h-full flex flex-1 items-center justify-center flex-col gap-2">
+      <TriangleAlert className="size-6 animate-spin text-muted-foreground" data-testid="loader" />
+      <span className="text-sm text-muted-foreground">Channel not found</span>
     </div>
   );
 }

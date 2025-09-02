@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { TrashIcon } from "lucide-react";
 import { useUpdateWorkspace } from "@/features/workspaces/api/useUpdateWorkspace";
-import { useWorkspaceId } from "@/hooks/useWorkspaceId";
+import { useWorkspaceId } from "@/hooks/useSearchParams";
 import { useRemoveWorkspace } from "@/features/workspaces/api/useRemoveWorkspace";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";

@@ -10,7 +10,7 @@ import { useJoinNewMember } from "@/features/workspaces/api/useJoinNewMember";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useWorkspaceId } from "@/hooks/useWorkspaceId";
+import { useWorkspaceId } from "@/hooks/useSearchParams";
 import { useGetWorkspaceInfoById } from "@/features/workspaces/api/useGetWorkspaces";
 import { cn } from "@/lib/utils";
 

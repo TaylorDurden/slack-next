@@ -1,6 +1,6 @@
 import { renderHook } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import { useWorkspaceId } from "@/hooks/useWorkspaceId";
+import { useWorkspaceId } from "@/hooks/useSearchParams";
 
 // Mock next/navigation
 vi.mock("next/navigation", () => ({

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import WorkspacePage from "@/app/workspaces/[workspaceId]/page";
+import WorkspaceIdPage from "@/app/workspaces/[workspaceId]/page";
 import React from "react";
 
 // Mocks
@@ -28,7 +28,7 @@ vi.mock("@/features/workspaces/api/useGetWorkspaces", () => ({
 describe("WorkspacePage", () => {
   it("renders a loader when loading", () => {
     mockUseGetWorkspaceById.mockReturnValue({ isLoading: true });
-    render(<WorkspacePage />);
+    render(<WorkspaceIdPage />);
     expect(screen.getByTestId("loader")).toBeInTheDocument();
   });
 
@@ -37,7 +37,7 @@ describe("WorkspacePage", () => {
       isLoading: false,
       data: null,
     });
-    render(<WorkspacePage />);
+    render(<WorkspaceIdPage />);
     expect(mockReplace).toHaveBeenCalledWith("/");
   });
 
@@ -51,7 +51,7 @@ describe("WorkspacePage", () => {
       isLoading: false,
       data: workspace,
     });
-    render(<WorkspacePage />);
+    render(<WorkspaceIdPage />);
     expect(screen.getByText("Test Workspace")).toBeInTheDocument();
     expect(screen.getByText("Workspace ID: workspace1")).toBeInTheDocument();
     expect(screen.getByText("Join Code: 123456")).toBeInTheDocument();

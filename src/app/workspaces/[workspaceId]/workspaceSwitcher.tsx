@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { useWorkspaceId } from "@/hooks/useWorkspaceId";
+import { useWorkspaceId } from "@/hooks/useSearchParams";
 import { useGetWorkspaceById, useGetWorkspaces } from "@/features/workspaces/api/useGetWorkspaces";
 import { useCreateWorkspaceModal } from "@/features/workspaces/store/useCreateWorkspaceModal";
 import { Loader, Plus } from "lucide-react";

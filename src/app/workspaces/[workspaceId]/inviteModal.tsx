@@ -11,7 +11,7 @@ import {
 import { RefreshCw, Copy, Loader } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { useWorkspaceId } from "@/hooks/useWorkspaceId";
+import { useWorkspaceId } from "@/hooks/useSearchParams";
 import { useGetWorkspaceById } from "@/features/workspaces/api/useGetWorkspaces";
 import { useWorkspaceRegenerateJoinCode } from "@/features/workspaces/api/useWorkspaceRegenerateJoinCode";
 import { useConfirm } from "@/hooks/useConfirm";
@@ -24,7 +24,7 @@ export const InviteModal = ({ open, setOpen }: InviteModalProps) => {
   const workspaceId = useWorkspaceId();
   const { data: workspace, isLoading: workspaceLoading } = useGetWorkspaceById({ id: workspaceId });
   const handleCopyInviteLink = () => {
-    const copyLink = `${window.location.origin}/join/${workspaceId}/code/${workspace?.joinCode}`;
+    const copyLink = `${window.location.origin}/join/${workspaceId}`;
     navigator.clipboard.writeText(copyLink).then(() => toast.success("Invite link copied to clipboard!"));
   };
   const { mutate, isPending: isRegenerating } = useWorkspaceRegenerateJoinCode();
