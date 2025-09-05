@@ -5,8 +5,9 @@ import { useGetChannelById } from "@/features/channels/api/useGetChannels";
 import { useChannelId } from "@/hooks/useSearchParams";
 import { Loader } from "lucide-react";
 import { Header } from "./header";
-import EditChannelModal from "@/features/channels/components/EditChannelModal";
+import EditChannelModal from "@/features/channels/components/editChannelModal";
 import { useState } from "react";
+import { ChatInput } from "./chatInput";
 
 const ChannelIdPage = () => {
   const channelId = useChannelId();
@@ -26,10 +27,11 @@ const ChannelIdPage = () => {
   }
 
   return (
-    <div>
+    <div className="flex flex-col h-full">
       <EditChannelModal open={open} setOpen={setOpen} initialChannelName={channel.name} channelId={channel._id} />
       <Header title={channel.name} onToggle={() => setOpen(!open)} />
-      <p>Channel ID: {channel._id}</p>
+      <div className="flex-1"></div>
+      <ChatInput placeholder={`Message # ${channel.name} : What's on your mind?`} />
     </div>
   );
 };
