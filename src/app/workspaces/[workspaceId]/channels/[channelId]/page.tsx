@@ -8,11 +8,14 @@ import { Header } from "./header";
 import EditChannelModal from "@/features/channels/components/editChannelModal";
 import { useState } from "react";
 import { ChatInput } from "./chatInput";
+import { useGetMessages } from "@/features/messages/api/useGetMessage";
 
 const ChannelIdPage = () => {
   const channelId = useChannelId();
+  const { results } = useGetMessages({ channelId });
   const [open, setOpen] = useState(false);
   const { data: channel, isLoading: channelLoading } = useGetChannelById({ id: channelId });
+  console.log(results);
 
   if (channelLoading) {
     return (
@@ -30,7 +33,7 @@ const ChannelIdPage = () => {
     <div className="flex flex-col h-full">
       <EditChannelModal open={open} setOpen={setOpen} initialChannelName={channel.name} channelId={channel._id} />
       <Header title={channel.name} onToggle={() => setOpen(!open)} />
-      <div className="flex-1"></div>
+      <div className="flex-1">{JSON.stringify(results)}</div>
       <ChatInput placeholder={`Message # ${channel.name} : What's on your mind?`} />
     </div>
   );

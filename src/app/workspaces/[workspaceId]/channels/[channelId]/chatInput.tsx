@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Quill from "quill";
-import { useCreateMessage } from "@/features/messages/api/useCreateWorkspace";
+import { useCreateMessage } from "@/features/messages/api/useCreateMessage";
 import { useChannelId, useWorkspaceId } from "@/hooks/useSearchParams";
 import { toast } from "sonner";
 import { useGenerateUploadUrl } from "@/features/upload/api/useGenerateUploadUrl";
